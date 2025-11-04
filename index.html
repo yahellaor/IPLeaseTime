@@ -9,12 +9,17 @@
 
     <!-- טעינת Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- טעינת פונט Rubik מ-Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        /* הגדרת פונט כללי ואסתטיקה */
         body {
-            font-family: 'Inter', sans-serif;
+            /* שינוי הפונט ל-Rubik */
+            font-family: 'Rubik', sans-serif;
             background-color: #f7f7f7;
             direction: rtl;
         }
+        /* סגנון כללי לכרטיסים */
         .card {
             background-color: white;
             padding: 2rem;
@@ -25,6 +30,7 @@
         .card:hover {
              transform: translateY(-3px);
         }
+        /* סגנון לשדות קלט */
         input[type="number"] {
             text-align: right;
             border: 1px solid #ccc;
@@ -32,6 +38,7 @@
             border-radius: 0.5rem;
             width: 100%;
         }
+        /* מבטיח רספונסיביות מלאה */
         .grid {
             width: 100%;
         }
@@ -41,13 +48,14 @@
 
     <div class="max-w-6xl mx-auto">
         <h1 class="text-3xl font-bold text-center mb-10 text-gray-800 border-b-2 border-indigo-500 pb-2">
-            מחשבון הקצאת IP (DHCP Lease Time)
+            מחשבון זמן חכירת IP (DHCP Lease Time)
         </h1>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-            <!-- עמודת המלצות -->
-            <div class="card lg:col-span-1 border-r-4 border-indigo-500">
+            <!-- עמודת המלצות (צד ימין ב-LG, תחתית ב-Mobile) -->
+            <!-- שימוש ב-lg:order-last כדי להבטיח שבמסך גדול הוא יהיה הטור השלישי. -->
+            <div class="card lg:col-span-1 border-r-4 border-indigo-500 order-3 lg:order-last">
                 <h2 class="text-2xl font-semibold mb-6 text-indigo-700">זמני חכירה מומלצים</h2>
                 
                 <div class="space-y-6">
@@ -57,7 +65,7 @@
                         <p class="text-gray-600">
                             <span class="font-semibold">צורך בשחרור מהיר:</span> במקרים אלו יש תחלופה גבוהה של אנשים ומחסור בכתובות IP. זמן חכירה קצר מבטיח שכתובות שהתפנו ישוחררו במהירות לשימוש חוזר.
                         </p>
-                        <p class="mt-2 font-mono text-red-800">
+                        <p class="mt-2 text-red-800">
                             <strong>30 דקות עד 4 שעות</strong>
                             <br>(1,800 עד 14,400 שניות)
                         </p>
@@ -69,7 +77,7 @@
                         <p class="text-gray-600">
                             <span class="font-semibold">רשת יציבה:</span> המכשירים נשארים מחוברים לזמן ארוך. המלצה זו מצמצמת את תעבורת ה-DHCP (פחות בקשות חידוש) תוך שמירה על גמישות.
                         </p>
-                        <p class="mt-2 font-mono text-green-800">
+                        <p class="mt-2 text-green-800">
                             <strong>24 שעות עד 7 ימים</strong>
                             <br>(86,400 עד 604,800 שניות)
                         </p>
@@ -81,7 +89,7 @@
                         <p class="text-gray-600">
                             <span class="font-semibold">יציבות מוחלטת:</span> צמצום משמעותי של תעבורת ה-DHCP על ידי הארכת זמני החכירה למקסימום, כאשר המכשירים קבועים.
                         </p>
-                        <p class="mt-2 font-mono text-blue-800">
+                        <p class="mt-2 text-blue-800">
                             <strong>10 ימים עד 30 ימים</strong>
                             <br>(864,000 עד 2,592,000 שניות)
                         </p>
@@ -89,11 +97,12 @@
                 </div>
             </div>
 
-            <!-- עמודת המחשבון הראשי -->
-            <div class="card lg:col-span-2 space-y-8">
+            <!-- עמודת המחשבון הראשי (טור 1-2 ב-LG, עליון ב-Mobile) -->
+            <div class="card lg:col-span-2 space-y-8 flex flex-col">
                 
-                <!-- חלק 0: הסבר כללי על DHCP Lease Time -->
-                <div class="border-b pb-6 mb-6 border-indigo-200 bg-gray-50 p-4 rounded-lg">
+                <!-- חלק 0: הסבר כללי על DHCP Lease Time + אזהרה -->
+                <!-- במובייל: order-3 (תחתית). במחשב: lg:order-1 (ראשון). -->
+                <div class="border-b pb-6 mb-6 border-indigo-200 bg-gray-50 p-4 rounded-lg order-3 lg:order-1">
                     <h2 class="text-xl font-bold mb-3 text-gray-700">מהו DHCP Lease Time?</h2>
                     <p class="text-gray-600 mb-2">
                         זמן חכירת IP (Lease Time) הוא משך הזמן שבו כתובת IP שהוקצתה למכשיר על ידי שרת ה-DHCP נשארת "שמורה" עבורו.
@@ -110,7 +119,7 @@
                         </summary>
                         <div class="pt-4 border-t border-red-300 mt-2">
                             <p class="text-sm text-gray-700">
-                                הערך 0 שניות בהגדרת זמן חכירת IP הוא דו-משמעי ואינו מומלץ לשימוש.
+                                **הערך 0 שניות בהגדרת זמן חכירת IP הוא דו-משמעי ואינו מומלץ לשימוש.**
                                 <br>במערכות DHCP שונות, ערך זה מתפרש בשתי דרכים עיקריות, כאשר שתיהן יוצרות חוסר ודאות או סיכון:
                             </p>
                             <ul class="list-disc list-inside text-sm text-gray-700 mt-2 space-y-1 pr-4">
@@ -122,14 +131,15 @@
                                 </li>
                             </ul>
                             <p class="text-sm text-gray-700 font-semibold mt-3 pt-2 border-t border-yellow-200">
-                                מסקנה והמלצה: לא מומלץ להגדיר נתון 0 בשום מצב. אם נדרשת כתובת IP קבועה למכשיר, יש להשתמש בשיטת הקצאה סטטית (Static Lease / Reservation) בשרת ה-DHCP.
+                                **מסקנה והמלצה:** לא מומלץ להגדיר נתון 0 בשום מצב. אם נדרשת כתובת IP קבועה למכשיר, יש להשתמש בשיטת הקצאה סטטית (Static Lease / Reservation) בשרת ה-DHCP.
                             </p>
                         </div>
                     </details>
                 </div>
 
                 <!-- חלק 1: המרת ימים/שעות/דקות לשניות -->
-                <div class="border-b pb-6 border-indigo-200">
+                <!-- במובייל: order-1 (ראשון). במחשב: lg:order-2 (שני). -->
+                <div class="border-b pb-6 border-indigo-200 order-1 lg:order-2">
                     <h2 class="text-xl font-bold mb-4 text-gray-700">1. המר מ'זמן קריא' ל'שניות DHCP'</h2>
                     <p class="text-sm text-gray-500 mb-4">הכנס ערכים (מספרים שלמים) בשדות הרלוונטיים כדי לקבל את ערך השניות הנדרש בהגדרות ה-DHCP:</p>
                     
@@ -153,12 +163,13 @@
                     </div>
                     
                     <div id="resultToSeconds" class="mt-4 p-4 bg-indigo-100 border border-indigo-400 rounded-lg">
-                        <p class="font-semibold text-indigo-800">סך שניות (ערך DHCP): <span id="totalSecondsDisplay" class="font-mono text-2xl mr-2">0</span></p>
+                        <p class="font-semibold text-indigo-800">סך שניות (ערך DHCP): <span id="totalSecondsDisplay" class="font-bold text-2xl mr-2">0</span></p>
                     </div>
                 </div>
 
                 <!-- חלק 2: המרת שניות לזמן קריא -->
-                <div>
+                <!-- במובייל: order-2 (שני). במחשב: lg:order-3 (שלישי). -->
+                <div class="order-2 lg:order-3">
                     <h2 class="text-xl font-bold mb-4 text-gray-700">2. המר מ'שניות DHCP' ל'זמן קריא'</h2>
                     <p class="text-sm text-gray-500 mb-4">הכנס את הערך הכולל של השניות שברצונך להמיר (לדוגמה, ערך קיים בשרת):</p>
                     
@@ -174,7 +185,7 @@
                     
                     <div id="resultToTime" class="mt-4 p-4 bg-gray-100 border border-gray-400 rounded-lg min-h-[4rem]">
                         <p class="font-semibold text-gray-800">תוצאה:</p>
-                        <p id="timeResultDisplay" class="font-mono text-xl mt-1">אנא הכנס שניות ולחץ 'המר'.</p>
+                        <p id="timeResultDisplay" class="font-bold text-xl mt-1">אנא הכנס שניות ולחץ 'המר'.</p>
                     </div>
                 </div>
 
