@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DHCP Time Calculator</title>
+    <!-- טעינת Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7;
+            direction: rtl;
+        }
+        .card {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+             transform: translateY(-3px);
+        }
+        input[type="number"] {
+            text-align: right;
+            border: 1px solid #ccc;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            width: 100%;
+        }
+        .grid {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-10 text-gray-800 border-b-2 border-indigo-500 pb-2">
+            מחשבון הקצאת IP (DHCP Lease Time)
+        </h1>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- עמודת המלצות -->
+            <div class="card lg:col-span-1 border-r-4 border-indigo-500">
+                <h2 class="text-2xl font-semibold mb-6 text-indigo-700">זמני חכירה מומלצים</h2>
+                
+                <div class="space-y-6">
+                    <!-- המלצה 1: רשתות דינמיות/ציבוריות -->
+                    <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <h3 class="font-bold text-lg text-red-700 mb-1">רשתות עם תחלופה גבוהה (ציבוריות, בתי מלון, Wi-Fi)</h3>
+                        <p class="text-gray-600">
+                            <span class="font-semibold">צורך בשחרור מהיר:</span> במקרים אלו יש תחלופה גבוהה של אנשים ומחסור בכתובות IP. זמן חכירה קצר מבטיח שכתובות שהתפנו ישוחררו במהירות לשימוש חוזר.
+                        </p>
+                        <p class="mt-2 font-mono text-red-800">
+                            <strong>30 דקות עד 4 שעות</strong>
+                            <br>(1,800 עד 14,400 שניות)
+                        </p>
+                    </div>
+                    
+                    <!-- המלצה 2: רשתות ביתיות / קטנות -->
+                    <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <h3 class="font-bold text-lg text-green-700 mb-1">רשתות ביתיות / קטנות (משרד קטן/בינוני)</h3>
+                        <p class="text-gray-600">
+                            <span class="font-semibold">רשת יציבה:</span> המכשירים נשארים מחוברים לזמן ארוך. המלצה זו מצמצמת את תעבורת ה-DHCP (פחות בקשות חידוש) תוך שמירה על גמישות.
+                        </p>
+                        <p class="mt-2 font-mono text-green-800">
+                            <strong>24 שעות עד 7 ימים</strong>
+                            <br>(86,400 עד 604,800 שניות)
+                        </p>
+                    </div>
+
+                    <!-- המלצה 3: רשתות גדולות ויציבות -->
+                    <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <h3 class="font-bold text-lg text-blue-700 mb-1">רשתות גדולות ויציבות (ארגוני)</h3>
+                        <p class="text-gray-600">
+                            <span class="font-semibold">יציבות מוחלטת:</span> צמצום משמעותי של תעבורת ה-DHCP על ידי הארכת זמני החכירה למקסימום, כאשר המכשירים קבועים.
+                        </p>
+                        <p class="mt-2 font-mono text-blue-800">
+                            <strong>10 ימים עד 30 ימים</strong>
+                            <br>(864,000 עד 2,592,000 שניות)
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- עמודת המחשבון הראשי -->
+            <div class="card lg:col-span-2 space-y-8">
+                
+                <!-- חלק 0: הסבר כללי על DHCP Lease Time -->
+                <div class="border-b pb-6 mb-6 border-indigo-200 bg-gray-50 p-4 rounded-lg">
+                    <h2 class="text-xl font-bold mb-3 text-gray-700">מהו DHCP Lease Time?</h2>
+                    <p class="text-gray-600 mb-2">
+                        זמן חכירת IP (Lease Time) הוא משך הזמן שבו כתובת IP שהוקצתה למכשיר על ידי שרת ה-DHCP נשארת "שמורה" עבורו.
+                        כאשר חצי מהזמן חולף (T1), המכשיר מנסה לחדש את החכירה. ככל שהזמן ארוך יותר, כך יש פחות תעבורת רשת הקשורה לחידושי חכירה.
+                    </p>
+                    
+                    <!-- הסבר מפורט על 0 שניות - כעת מקופל -->
+                    <details class="bg-yellow-100 p-3 rounded-md border border-red-500 mt-4 shadow-inner">
+                        <summary class="cursor-pointer font-bold text-lg text-red-700 flex items-center hover:text-red-800 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.3 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            אזהרה קריטית: הגדרת 0 שניות - לחץ להרחבה
+                        </summary>
+                        <div class="pt-4 border-t border-red-300 mt-2">
+                            <p class="text-sm text-gray-700">
+                                הערך 0 שניות בהגדרת זמן חכירת IP הוא דו-משמעי ואינו מומלץ לשימוש.
+                                <br>במערכות DHCP שונות, ערך זה מתפרש בשתי דרכים עיקריות, כאשר שתיהן יוצרות חוסר ודאות או סיכון:
+                            </p>
+                            <ul class="list-disc list-inside text-sm text-gray-700 mt-2 space-y-1 pr-4">
+                                <li>
+                                    <span class="font-semibold text-red-700">אפשרות מסוכנת:</span> במכשירים מסוימים, ההגדרה היא 0 שניות באופן מילולי, כלומר: קבלת כתובת IP ושחרור מיידי. דבר זה עלול לגרום לניתוק מיידי וכשל מתמשך בתקשורת.
+                                </li>
+                                <li>
+                                    <span class="font-semibold text-green-700">אפשרות חלופית:</span> במכשירים אחרים, משמעותו 'חכירה בלתי מוגבלת' (Permanent Lease). במקרה זה, כתובת ה-IP נשארת שמורה למכשיר זה לנצח.
+                                </li>
+                            </ul>
+                            <p class="text-sm text-gray-700 font-semibold mt-3 pt-2 border-t border-yellow-200">
+                                מסקנה והמלצה: לא מומלץ להגדיר נתון 0 בשום מצב. אם נדרשת כתובת IP קבועה למכשיר, יש להשתמש בשיטת הקצאה סטטית (Static Lease / Reservation) בשרת ה-DHCP.
+                            </p>
+                        </div>
+                    </details>
+                </div>
+
+                <!-- חלק 1: המרת ימים/שעות/דקות לשניות -->
+                <div class="border-b pb-6 border-indigo-200">
+                    <h2 class="text-xl font-bold mb-4 text-gray-700">1. המר מ'זמן קריא' ל'שניות DHCP'</h2>
+                    <p class="text-sm text-gray-500 mb-4">הכנס ערכים (מספרים שלמים) בשדות הרלוונטיים כדי לקבל את ערך השניות הנדרש בהגדרות ה-DHCP:</p>
+                    
+                    <div id="timeToSecondsInputs" class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                        <div>
+                            <label for="days" class="block text-sm font-medium text-gray-700 mb-1">ימים</label>
+                            <input type="number" id="days" value="0" min="0" class="input-field" oninput="calculateToSeconds()">
+                        </div>
+                        <div>
+                            <label for="hours" class="block text-sm font-medium text-gray-700 mb-1">שעות</label>
+                            <input type="number" id="hours" value="0" min="0" max="23" class="input-field" oninput="calculateToSeconds()">
+                        </div>
+                        <div>
+                            <label for="minutes" class="block text-sm font-medium text-gray-700 mb-1">דקות</label>
+                            <input type="number" id="minutes" value="0" min="0" max="59" class="input-field" oninput="calculateToSeconds()">
+                        </div>
+                        <div>
+                            <label for="seconds" class="block text-sm font-medium text-gray-700 mb-1">שניות</label>
+                            <input type="number" id="seconds" value="0" min="0" max="59" class="input-field" oninput="calculateToSeconds()">
+                        </div>
+                    </div>
+                    
+                    <div id="resultToSeconds" class="mt-4 p-4 bg-indigo-100 border border-indigo-400 rounded-lg">
+                        <p class="font-semibold text-indigo-800">סך שניות (ערך DHCP): <span id="totalSecondsDisplay" class="font-mono text-2xl mr-2">0</span></p>
+                    </div>
+                </div>
+
+                <!-- חלק 2: המרת שניות לזמן קריא -->
+                <div>
+                    <h2 class="text-xl font-bold mb-4 text-gray-700">2. המר מ'שניות DHCP' ל'זמן קריא'</h2>
+                    <p class="text-sm text-gray-500 mb-4">הכנס את הערך הכולל של השניות שברצונך להמיר (לדוגמה, ערך קיים בשרת):</p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 mb-6 items-end">
+                        <div class="flex-grow w-full">
+                            <label for="inputSeconds" class="block text-sm font-medium text-gray-700 mb-1">סך שניות (DHCP)</label>
+                            <input type="number" id="inputSeconds" value="86400" min="0" class="input-field">
+                        </div>
+                        <button onclick="calculateToTime()" class="w-full sm:w-auto px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition duration-150 shadow-md">
+                            המר לשעות/ימים
+                        </button>
+                    </div>
+                    
+                    <div id="resultToTime" class="mt-4 p-4 bg-gray-100 border border-gray-400 rounded-lg min-h-[4rem]">
+                        <p class="font-semibold text-gray-800">תוצאה:</p>
+                        <p id="timeResultDisplay" class="font-mono text-xl mt-1">אנא הכנס שניות ולחץ 'המר'.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // קבועים להמרה
+        const SECONDS_IN_MINUTE = 60;
+        const SECONDS_IN_HOUR = 3600;
+        const SECONDS_IN_DAY = 86400;
+
+        /**
+         * חלק 1: המרת ימים/שעות/דקות/שניות לסך שניות
+         */
+        function calculateToSeconds() {
+            try {
+                // קבלת הערכים מהשדות. שימוש ב-parseInt עם 0 כברירת מחדל כדי למנוע NaN
+                const days = parseInt(document.getElementById('days').value) || 0;
+                const hours = parseInt(document.getElementById('hours').value) || 0;
+                const minutes = parseInt(document.getElementById('minutes').value) || 0;
+                const seconds = parseInt(document.getElementById('seconds').value) || 0;
+
+                // בדיקות בסיסיות
+                if (days < 0 || hours < 0 || minutes < 0 || seconds < 0) {
+                    document.getElementById('totalSecondsDisplay').textContent = 'שגיאה: מספר שלילי';
+                    return;
+                }
+
+                // לוגיקת החישוב
+                const totalSeconds = 
+                    (days * SECONDS_IN_DAY) + 
+                    (hours * SECONDS_IN_HOUR) + 
+                    (minutes * SECONDS_IN_MINUTE) + 
+                    seconds;
+
+                // עדכון התוצאה עם מפריד אלפים
+                document.getElementById('totalSecondsDisplay').textContent = totalSeconds.toLocaleString('he-IL');
+
+            } catch (error) {
+                console.error("שגיאה בחישוב לשניות:", error);
+                document.getElementById('totalSecondsDisplay').textContent = 'שגיאה בחישוב';
+            }
+        }
+
+        // הפעלה ראשונית עם ערכי ברירת המחדל (0)
+        document.addEventListener('DOMContentLoaded', calculateToSeconds);
+
+
+        /**
+         * חלק 2: המרת סך שניות לימים/שעות/דקות/שניות
+         */
+        function calculateToTime() {
+            try {
+                const inputSecondsElement = document.getElementById('inputSeconds');
+                const totalSeconds = parseInt(inputSecondsElement.value) || 0;
+                const timeResultDisplay = document.getElementById('timeResultDisplay');
+
+                if (totalSeconds < 0 || isNaN(totalSeconds)) {
+                    timeResultDisplay.textContent = 'אנא הכנס מספר חיובי תקין.';
+                    return;
+                }
+                
+                // טיפול מיוחד בערך 0 והפנייה לאזהרה
+                if (totalSeconds === 0) {
+                     timeResultDisplay.textContent = '0 שניות = אזהרה קריטית! ראה הסבר מפורט על הסיכונים למעלה.';
+                     return;
+                }
+
+
+                let remainingSeconds = totalSeconds;
+                
+                // חישוב ימים
+                const days = Math.floor(remainingSeconds / SECONDS_IN_DAY);
+                remainingSeconds %= SECONDS_IN_DAY;
+
+                // חישוב שעות
+                const hours = Math.floor(remainingSeconds / SECONDS_IN_HOUR);
+                remainingSeconds %= SECONDS_IN_HOUR;
+
+                // חישוב דקות
+                const minutes = Math.floor(remainingSeconds / SECONDS_IN_MINUTE);
+                remainingSeconds %= SECONDS_IN_MINUTE;
+
+                // מה שנשאר זה שניות
+                const seconds = remainingSeconds;
+
+                // יצירת מחרוזת התוצאה בעברית
+                let resultParts = [];
+                if (days > 0) resultParts.push(`${days} ימים`);
+                if (hours > 0) resultParts.push(`${hours} שעות`);
+                if (minutes > 0) resultParts.push(`${minutes} דקות`);
+                
+                // הצגת שניות רק אם יש צורך או אם אין יחידות גדולות יותר
+                if (seconds > 0 || resultParts.length === 0) {
+                    resultParts.push(`${seconds} שניות`);
+                }
+                
+                timeResultDisplay.textContent = resultParts.join(', ') + `. (סה"כ ${totalSeconds.toLocaleString('he-IL')} שניות)`;
+
+            } catch (error) {
+                console.error("שגיאה בחישוב לזמן קריא:", error);
+                document.getElementById('timeResultDisplay').textContent = 'שגיאה בחישוב.';
+            }
+        }
+
+        // הפעלה ראשונית של חישוב השניות לזמן קריא עם ערך ברירת המחדל
+        document.addEventListener('DOMContentLoaded', calculateToTime);
+
+    </script>
+</body>
+</html>
